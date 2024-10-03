@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <style>
+      /* Custom CSS */
+      .form-container {
+        background: linear-gradient(135deg, rgb(185, 145, 11), rgb(231, 228, 217));
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 10px 10px 20px rgba(56, 55, 55, 0.7);
+        font-family: 'Kanit';
+        font-style: medium;
+        font-weight: 500;
+        color: #000000;
+      }
+
+      h1{
+        font-family: 'Kanit';
+        font-style: bold;
+        font-weight: 700;
+        color: #000000;
+      }
+
+      .card-container {
+        background: linear-gradient(135deg, rgb(185, 145, 11), rgb(231, 228, 217));
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 10px 10px 20px rgba(56, 55, 55, 0.7);
+        font-family: 'Kanit';
+        font-style: medium;
+        font-weight: 500;
+        color: #000000;
+        
+      }
+      p{
+        font-family: 'Kanit';
+        font-style: light;
+        font-weight: 300;
+        color: #000000;
+      }
+
+      .card-title, .card-text {
+        color: #000000;
+      }
+
+      .btn-edit, .btn-delete {
+        margin-right: 5px;
+      }
+      .containerh1 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+      .date-display {
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .date-box {
+        background-color: #f8f9fa; /* Light background color */
+        border: 2px solid #6c757d; /* Border around the date box */
+        border-radius: 10px;
+        padding: 10px;
+        display: inline-block; /* Prevents the date box from taking full width */
+        text-align: center;
+        margin-right: 20px;
+      }
+
+      .date-day {
+        font-size: 18px;
+        font-weight: bold;
+        display: block;
+      }
+
+      .date-month, .date-year {
+        font-size: 13px;
+        text-transform: uppercase;
+        display: block;
+      }
+      .container-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+      .text-container {
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        }
+        .typing-effect {
+            display: inline-block;
+            border-right: .15em solid orange;
+            white-space: nowrap;
+            overflow: hidden;
+            animation: typing 2.5s steps(30, end) infinite, blink-caret .90s step-end infinite;
+            width: 0;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            10% { border-color: orange; }
+        }
+
+    </style>
+  </head>
+  <body>
+    {% if user.is_authenticated %}
+    <button ><a href="logout/">Logout</a></button>
+    {% endif %}
+    <div class="containerh1 container-center mt-2">
+      <div class="date-display">
+        <div class="date-box">
+          <span class="date-day">{{ now|date:"d" }}</span>
+          <span class="date-month">{{ now|date:"M" }}</span>
+        </div>
+        <div>
+          <div class="text-container">
+            <h1 class="text-center typing-effect">Hello {{ user.first_name }}!</h1>
+          </div>   
+          <h3 class="text-center">What are your plans for today.</h3>
+        </div>
+      </div>
+    </div>
+    <div class="container mt-4">
+      <div class="row">
+        <!-- Form Div -->
+        <div class="col-md-6">
+            <h1 >ADD TASK</h1>
+          <div class="form-container">
+            <form action="/todo/log/" method="post">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="inputName" class="form-label">Task</label>
+                <textarea class="form-control" placeholder="Please Enter Task Name" id="inputName" name="taskName"></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="inputDesc" class="form-label">Description</label>
+                <textarea class="form-control" style="height: 267px;" placeholder="Please Enter Task Description" id="inputDesc" name="taskDesc"></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="inputDate" class="form-label">Date</label>
+                <input type="date" class="form-control" id="inputDate" name="taskDate">
+              </div>
+              <button type="submit" class="btn btn-dark">Submit</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Card Div -->
+        <div class="col-md-6">
+          <div class="row">
+            <h1 >TASKS</h1>
+            {% for task in allTasks %}
+            <div class="col-12 mb-3">
+              <div class="card card-container">
+                <div class="card-body" >
+                  <h5 class="card-title">{{ task.taskName }}</h5>
+                  <p class="card-text">{{ task.desc }}</p>
+                  <div class="date-display">
+                    <div class="date-box">
+                      <span class="date-day">{{ task.date|date:"d" }}</span>
+                      <span class="date-month">{{ task.date|date:"M" }}</span>
+                      <span class="date-year">{{ task.date|date:"Y" }}</span>
+                    </div>
+                  </div>                  
+                  <a href="/todo/editTask?id={{task.id}}" class="btn btn-dark btn-edit m-1">Edit</a>
+                  <a href="/todo/delTask?id={{task.id}}"  class="btn btn-danger btn-delete">Delete</a>
+                  
+                    <input class="form-check-input mt-3 mx-1" type="checkbox"  id="check{{task.taskId}}" name="checkTask">
+                    <label class="form-check-label " for="taskCheck">
+                      Completed
+                    </label>
+                  
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  </body>
+</html>
+<script>
+  
+</script>
